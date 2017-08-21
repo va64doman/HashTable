@@ -25,6 +25,8 @@ public class StudentEntry
     private String subject;
     // Next student in a hash table after this student
     private StudentEntry next;
+    // Previous student in a hash table before this student
+    private StudentEntry previous;
     // Parameterised constructor to initialise object
     public StudentEntry(int sId, String sName, int sAge, String sSubject)
     {
@@ -32,6 +34,7 @@ public class StudentEntry
         name = sName;
         age = sAge;
         subject = sSubject;
+        previous = null;
         next = null;
     }
     // Getters
@@ -55,12 +58,22 @@ public class StudentEntry
     {
         return subject;
     }
+    // Get previous chained student after this student
+    public StudentEntry getPrevious()
+    {
+        return previous;
+    }
     // Get next chained student after this student
     public StudentEntry getNext()
     {
         return next;
     }
     // Setters
+    // To avoid using it, use protected method as that the variable was initialised once
+    protected void setKey(int key)
+    {
+        id = key;
+    }
     // Set new name
     public void setName(String sName)
     {
@@ -76,10 +89,15 @@ public class StudentEntry
     {
         subject = sSubject;
     }
-    // Set new key-value pairs at the end of the list
+    // Set new key-value pairs after this student
     public void setNext(StudentEntry student)
     {
         next = student;
+    }
+    // Set new key-value pairs before this student
+    public void setPrevious(StudentEntry student)
+    {
+        previous = student;
     }
     // Print details
     public void printDetails()
