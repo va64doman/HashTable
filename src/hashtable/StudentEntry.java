@@ -15,7 +15,7 @@ public class StudentEntry
 {
     // Student's ID
     // The id is going to be the hash table value
-    private int id;
+    private final int id;
     // Stundent's name
     // The name is going to be the hash table key
     private String name;
@@ -69,11 +69,6 @@ public class StudentEntry
         return next;
     }
     // Setters
-    // To avoid using it, use protected method as that the variable was initialised once
-    protected void setKey(int key)
-    {
-        id = key;
-    }
     // Set new name
     public void setName(String sName)
     {

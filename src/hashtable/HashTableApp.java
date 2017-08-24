@@ -11,13 +11,15 @@ package hashtable;
  */
 public class HashTableApp 
 {
-
     /**
      * @param args the command line arguments
      */
+    
+    // This code allows to show the implementation of the hash algorithm
     public static void main(String[] args) 
     {
-        // TODO code application logic here
+        Modular module = new Modular();
+        module.selectOption();
     }
     
 }

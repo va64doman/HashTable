@@ -14,13 +14,11 @@ package hashtable;
 public class HashTable 
 {
     // Hash table's size
-    private int tSize;
+    private final int tSize;
     // Size of elements in table
     private int size;
     // Array of buckets in table
-    private StudentEntry[] table;
-    // Prime number
-    private int primeSize;
+    private final StudentEntry[] table;
     // Parameterised constructor to set table size
     public HashTable(int tabSize)
     {
@@ -31,34 +29,6 @@ public class HashTable
         {
             table[count] = null;
         }
-        primeSize = getPrime();
-    }
-    // Method to get prime number less than table size to use for double hashing
-    public int getPrime()
-    {
-        // Iterate loop until count is 0
-        for(int count = tSize - 1; count >= 1; count--)
-        {
-            // Factor, assuming fact is 0 when there are two factors
-            // If fact is greater than 0, it has more than two factors
-            int fact = 0;
-            // Keep adding factor until
-            for(int factor = 2; factor <= (int)Math.sqrt(count); factor++)
-            {
-                // If remainder is 0, increment fact by 1
-                if(count % factor == 0)
-                {
-                    fact++;
-                }
-            }
-            // If there are only two factors, return this prime number(count)
-            if(fact == 0)
-            {
-                return count;
-            }
-        }
-        // Otherwise return 3
-        return 3;
     }
     // Method to get number of key-value pairs
     public int getSize()
@@ -84,38 +54,46 @@ public class HashTable
     // Function to get student's details
     public StudentEntry get(String key)
     {
-        // Set this value for checking if the bucket of the table is not null
-        int hash = firstHash(key) % tSize;
-        // Check if bucket in the hash table is empty
-        if(table[hash] == null)
+        // Check if the table is not empty
+        if(!isEmpty())
         {
-            return null;
-        }
-        // If bucket in the hash table is not empty
-        else
-        {
-            // Set entry as array of buckets from this index by hash
-            StudentEntry entry = table[hash];
-            // Check through every chains in this bucket, the key for getting
-            // this bucket is name
-            while(entry != null && !entry.getName().equals(key))
-            {
-                // Set entry as the next linked entry of this bucket
-                entry = entry.getNext();
-            }
-            // If get is not found, return as null
-            if(entry == null)
+            // Set this value for checking if the bucket of the table is not null
+            int hash = firstHash(key) % tSize;
+            // Check if bucket in the hash table is empty
+            if(table[hash] == null)
             {
                 return null;
             }
-            // If get is found, return element of table from hash index
+            // If bucket in the hash table is not empty
             else
             {
-                return entry;
+                // Set entry as array of buckets from this index by hash
+                StudentEntry entry = table[hash];
+                // Check through every chains in this bucket, the key for getting
+                // this bucket is name
+                while(entry != null && !entry.getName().equals(key))
+                {
+                    // Set entry as the next linked entry of this bucket
+                    entry = entry.getNext();
+                }
+                // If get is not found, return as null
+                if(entry == null)
+                {
+                    return null;
+                }
+                // If get is found, return element of table from hash index
+                else
+                {
+                    return entry;
+                }
+
             }
-            
         }
-        
+        // If table is empty, display this message
+        else
+        {
+            return null;
+        }
     }
     // Function for giving a hash value for a given string
     private int firstHash(String key)
@@ -135,87 +113,168 @@ public class HashTable
     // Function for inserting a key value pair
     public void insert(int id, String name, int age, String subject)
     {
+        // Get hash value for name
         int hash = firstHash(name);
+        // Set pointer as new student's entry
         StudentEntry pointer = new StudentEntry(id, name, age, subject);
+        // Set start at the index of hash from the table
         StudentEntry start = table[hash];
-        
+        // Check if this bucket does not have any elements
         if(table[hash] == null)
         {
+            // Add pointer to this bucket
             table[hash] = pointer;
         }
-        
+        // If bucket is not empty
         else
         {
-            pointer.setNext(start);
-            start.setPrevious(pointer);
-            table[hash] = pointer;
+            // Set entry as start
+            StudentEntry entry = start;
+            // Check if the next node is not null
+            while(entry.getNext() != null)
+            {
+                // Set entry as its next node
+                entry = entry.getNext();
+            }
+            // If there are no more next pointer, set entry's next node as pointer
+            entry.setNext(pointer);
+            // Set pointer's previous node as entry
+            pointer.setPrevious(entry);
         }
+        // Increment size by 1
         size++;
     }
     // Function to remove key
     public void remove(String key)
     {
-        int hash = firstHash(key);
-        StudentEntry start = table[hash];
-        StudentEntry end = start;
-        if(start.getName().equals(key))
+        // Check if the table is empty
+        if(!isEmpty())
         {
-            size--;
-            if(start.getNext() != null)
+            // Get hash value from the user's search
+            int hash = firstHash(key);
+            // Set start as the array of the bucket, where index is equals to hash
+            StudentEntry start = table[hash];
+            // Set end as start if the key is not found at start
+            StudentEntry end = start;
+            // Set search as using the get method from key
+            StudentEntry search = get(key);
+            // To avoid null exception, state that start is not empty
+            if(start != null)
             {
-                table[hash] = null;
+                // Compare both objects, start and search, if match
+                if(start == search)
+                {
+                    // Decrement size by 1
+                    size--;
+                    // Check if next student after start is empty
+                    if(start.getNext() == null)
+                    {
+                        // Make this bucket null
+                        table[hash] = null;
+                    }
+                    // If there are more than one student in the bucket
+                    else
+                    {
+                        // Set start as the next student after start
+                        start = start.getNext();
+                        // Make new start's previous element null
+                        start.setPrevious(null);
+                        // Set this bucket as new start student of the list
+                        table[hash] = start;
+                    }
+                }
+                // If start and search are not match, check the rest of the list from this bucket
+                else
+                {
+                    // Continue this loop when the end's next student is not null
+                    // and next student's name is not equals to key
+                    while(end.getNext() != null && !end.getNext().getName().equals(key))
+                    {
+                        // Set end as end's next student
+                        end = end.getNext();
+                    }
+                    // If end's next student is null, show that element is not found
+                    if(end.getNext() == null)
+                    {
+                        System.out.println("Element is not found.");
+                    }
+                    // If end's next student is found, do this function
+                    else
+                    {
+                        // Decrement size by 1
+                        size--;
+                        // If end's next two student is null, set next student's next element null
+                        if(end.getNext().getNext() == null)
+                        {
+                            end.setNext(null);
+                        }
+                        // If there is/are next element after end's next student
+                        else
+                        {
+                            // Set previous as end for the next two students after end
+                            end.getNext().getNext().setPrevious(end);
+                            // Set end's next element as two students after end
+                            end.setNext(end.getNext().getNext());
+                            // Set this bucket as the start
+                            table[hash] = start;
+                        }
+                    }
+                }
             }
-            
             else
             {
-                start = start.getNext();
-                start.setPrevious(null);
-                table[hash] = start;
+                // If start is null, show that element does not existed
+                System.out.println("Element is not existed.");
             }
         }
         else
-        {            
-            while(end.getNext() != null && !end.getNext().getName().equals(key))
-            {
-                end = end.getNext();
-            }
-            
-            if(end.getNext() == null)
-            {
-                System.out.println("Element is not found.");
-            }
-            
-            else
-            {
-                size--;
-                if(end.getNext().getNext() == null)
-                {
-                    end.setNext(null);
-                }
-                else
-                {
-                    end.getNext().getNext().setPrevious(end);
-                    end.setNext(end.getNext().getNext());
-                    
-                    table[hash] = start;
-                }
-            }
-        } 
+        {
+            // If table is empty, show that table is empty
+            System.out.println("The table is empty.");
+        }
     }
-    
+    // Function to print hash table
     public void printHashTable()
     {
         System.out.println();
+        // Go through each buckets in the table
         for(int count = 0; count < table.length; count++)
         {
-            System.out.print("Bucket " + count + ": ");
+            // Increase count by 1 to avoid confusion
+            System.out.print("Bucket " + (count + 1) + ": ");
+            // Initialise start as index of the table
             StudentEntry start = table[count];
+            // Keep looping until start is null
             while(start != null)
             {
+                // Display ids in table
                 System.out.print(start.getID() + " ");
+                // Set start as start's next student
                 start = start.getNext();
             }
             System.out.println();
         }
+    }
+    // Function to check if key is existing
+    public boolean checkExistKey(int key)
+    {
+        // Using foreach loop to check all buckets and elements in table
+        // because it does not require numbers
+        for (StudentEntry start : table) 
+        {
+            // Continue first-test loop until start is null
+            while(start != null)
+            {
+                // If start's id is equal to key, return true
+                if(start.getID() == key)
+                {
+                    return true;
+                }
+                // Set start as next student
+                start = start.getNext();
+            }
+        }
+        // If not found, return false
+        return false;
     }
 }
