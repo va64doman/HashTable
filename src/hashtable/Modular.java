@@ -151,9 +151,11 @@ public class Modular
                 case 5:
                     System.out.println("There are " + hash.getSize() + " students in a hash table.");
                     break;
-                // If 6, display table
+                // If 6, display tables
                 case 6:
                     printTable();
+                    System.out.println();
+                    printTableByName();
                     break;
                 // If 7, change age and subject only because name is key.
                 // Name should not be change that will affect the get method from hash table
@@ -229,11 +231,17 @@ public class Modular
         // Display options
         return option.toString();
     }
-    // Display tables
+    // Display table by id
     private void printTable()
     {
         System.out.println("Displaying table");
-        hash.printHashTable();
+        hash.printHashTableByID();
+    }
+    // Display table by name
+    private void printTableByName()
+    {
+        System.out.println("Displaying table by name");
+        hash.printHashTableByName();
     }
     // Handle integer inputs
     private int handleInt()

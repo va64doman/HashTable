@@ -233,8 +233,8 @@ public class HashTable
             System.out.println("The table is empty.");
         }
     }
-    // Function to print hash table
-    public void printHashTable()
+    // Function to print hash table by ID
+    public void printHashTableByID()
     {
         System.out.println();
         // Go through each buckets in the table
@@ -249,6 +249,28 @@ public class HashTable
             {
                 // Display ids in table
                 System.out.print(start.getID() + " ");
+                // Set start as start's next student
+                start = start.getNext();
+            }
+            System.out.println();
+        }
+    }
+    // Function to print hash table by name
+    public void printHashTableByName()
+    {
+        System.out.println();
+        // Go through each buckets in the table
+        for(int count = 0; count < table.length; count++)
+        {
+            // Increase count by 1 to avoid confusion
+            System.out.print("Bucket " + (count + 1) + ": ");
+            // Initialise start as index of the table
+            StudentEntry start = table[count];
+            // Keep looping until start is null
+            while(start != null)
+            {
+                // Display ids in table
+                System.out.print(start.getName() + " ");
                 // Set start as start's next student
                 start = start.getNext();
             }
