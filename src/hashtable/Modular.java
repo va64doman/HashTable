@@ -27,8 +27,18 @@ public class Modular
         // Initialise new Scanner and HashTable object
         // Delimit new line character to set string as the whole line input
         scan = new Scanner(System.in).useDelimiter("[\r\n]");
-        System.out.println("Enter the number of buckets in the hash table.");
-        int size = handleInt();
+        int size;
+        // Continue this while size is less than 1
+        do
+        {
+            System.out.println("Enter the number of buckets in the hash table.");
+            size = handleInt();
+            if(size < 1)
+            {
+                System.out.println("Table size cannot be 0 or less.");
+            }
+        }
+        while(size < 1);
         hash = new HashTable(size);
         // Do this function while the user wants to keep using this app
         do

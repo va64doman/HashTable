@@ -269,8 +269,8 @@ public class HashTable
             // Keep looping until start is null
             while(start != null)
             {
-                // Display ids in table
-                System.out.print(start.getName() + " ");
+                // Display names in table
+                System.out.print(start.getName() + " | ");
                 // Set start as start's next student
                 start = start.getNext();
             }
